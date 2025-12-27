@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuthStore } from '../store/authStore';
 
 interface RegisterProps {
   onSwitchToLogin: () => void;
@@ -9,11 +10,32 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const signUp = useAuthStore((state) => state.signUp);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logika rejestracji będzie dodana później
-    console.log('Register attempt:', { name, email, password, confirmPassword });
+    setError(null);
+
+    if (password !== confirmPassword) {
+      setError('Hasła nie są identyczne.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Hasło musi mieć minimum 6 znaków.');
+      return;
+    }
+
+    setLoading(true);
+
+    const { error } = await signUp(email, password, name);
+
+    if (error) {
+      setError(error.message || 'Błąd rejestracji. Spróbuj ponownie.');
+      setLoading(false);
+    }
   };
 
   return (
@@ -89,6 +111,12 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
               />
             </div>
 
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             <div className="flex items-center">
               <input
                 id="terms"
@@ -110,9 +138,10 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              disabled={loading}
+              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Zarejestruj się
+              {loading ? 'Rejestracja...' : 'Zarejestruj się'}
             </button>
           </form>
 

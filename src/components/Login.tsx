@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuthStore } from '../store/authStore';
 
 interface LoginProps {
   onSwitchToRegister: () => void;
@@ -7,11 +8,21 @@ interface LoginProps {
 export default function Login({ onSwitchToRegister }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const signIn = useAuthStore((state) => state.signIn);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logika logowania będzie dodana później
-    console.log('Login attempt:', { email, password });
+    setError(null);
+    setLoading(true);
+
+    const { error } = await signIn(email, password);
+
+    if (error) {
+      setError(error.message || 'Błąd logowania. Sprawdź dane i spróbuj ponownie.');
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,6 +65,12 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
               />
             </div>
 
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input
@@ -69,9 +86,10 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              disabled={loading}
+              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Zaloguj się
+              {loading ? 'Logowanie...' : 'Zaloguj się'}
             </button>
           </form>
 
