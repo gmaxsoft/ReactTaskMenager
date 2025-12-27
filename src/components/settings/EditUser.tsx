@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useUsersStore } from '../../store/usersStore';
+import { supabaseAdmin } from '../../lib/supabase';
 import type { User } from '../../types/user';
 
 interface EditUserProps {
@@ -9,19 +10,43 @@ interface EditUserProps {
 }
 
 export default function EditUser({ user, onClose, onSuccess }: EditUserProps) {
-  const { updateUser } = useUsersStore();
+  const { updateUser, confirmUserEmail } = useUsersStore();
   const [formData, setFormData] = useState({
     full_name: user.full_name || '',
     role: user.role,
+    emailConfirmed: false,
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingEmail, setCheckingEmail] = useState(true);
 
   useEffect(() => {
+    // Sprawdź status potwierdzenia email
+    const checkEmailStatus = async () => {
+      try {
+        if (supabaseAdmin) {
+          const { data: users, error } = await supabaseAdmin.auth.admin.listUsers();
+          if (!error && users) {
+            const authUser = users.users.find(u => u.id === user.id);
+            setFormData(prev => ({
+              ...prev,
+              emailConfirmed: authUser?.email_confirmed_at !== null && authUser?.email_confirmed_at !== undefined,
+            }));
+          }
+        }
+      } catch (err) {
+        console.error('Error checking email status:', err);
+      } finally {
+        setCheckingEmail(false);
+      }
+    };
+
     setFormData({
       full_name: user.full_name || '',
       role: user.role,
+      emailConfirmed: false,
     });
+    checkEmailStatus();
   }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,15 +54,30 @@ export default function EditUser({ user, onClose, onSuccess }: EditUserProps) {
     setError(null);
     setLoading(true);
 
-    const { error } = await updateUser(user.id, formData);
+    // Najpierw zaktualizuj dane użytkownika
+    const { error: updateError } = await updateUser(user.id, {
+      full_name: formData.full_name,
+      role: formData.role,
+    });
+
+    if (updateError) {
+      setError(updateError.message || 'Błąd aktualizacji użytkownika.');
+      setLoading(false);
+      return;
+    }
+
+    // Jeśli checkbox emailConfirmed jest zaznaczony, potwierdź email
+    if (formData.emailConfirmed) {
+      const { error: confirmError } = await confirmUserEmail(user.id);
+      if (confirmError) {
+        setError(confirmError.message || 'Błąd potwierdzania email.');
+        setLoading(false);
+        return;
+      }
+    }
 
     setLoading(false);
-
-    if (error) {
-      setError(error.message || 'Błąd aktualizacji użytkownika.');
-    } else {
-      onSuccess();
-    }
+    onSuccess();
   };
 
   return (
@@ -88,6 +128,21 @@ export default function EditUser({ user, onClose, onSuccess }: EditUserProps) {
               <option value="admin">Administrator</option>
             </select>
           </div>
+
+          {!checkingEmail && (
+            <div className="flex items-center">
+              <input
+                id="emailConfirmed"
+                type="checkbox"
+                checked={formData.emailConfirmed}
+                onChange={(e) => setFormData({ ...formData, emailConfirmed: e.target.checked })}
+                className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label htmlFor="emailConfirmed" className="ml-2 text-sm text-gray-700">
+                Email potwierdzony
+              </label>
+            </div>
+          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">

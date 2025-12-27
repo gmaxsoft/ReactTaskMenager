@@ -10,6 +10,7 @@ interface UsersStore {
   addUser: (userData: { email: string; password: string; full_name: string; role?: 'user' | 'admin' }) => Promise<{ error: Error | null }>;
   updateUser: (id: string, userData: Partial<User>) => Promise<{ error: Error | null }>;
   deleteUser: (id: string) => Promise<{ error: Error | null }>;
+  confirmUserEmail: (id: string) => Promise<{ error: Error | null }>;
 }
 
 export const useUsersStore = create<UsersStore>((set, get) => ({
@@ -104,6 +105,30 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
 
       // Usuń użytkownika z auth (to automatycznie usunie profil przez CASCADE)
       const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(id);
+
+      if (authError) {
+        return { error: authError as Error };
+      }
+
+      // Odśwież listę użytkowników
+      await get().fetchUsers();
+
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  },
+
+  confirmUserEmail: async (id) => {
+    try {
+      if (!supabaseAdmin) {
+        return { error: new Error('Service role key not configured') };
+      }
+
+      // Potwierdź email użytkownika
+      const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(id, {
+        email_confirm: true,
+      });
 
       if (authError) {
         return { error: authError as Error };

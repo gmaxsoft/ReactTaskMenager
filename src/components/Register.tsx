@@ -11,12 +11,14 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const signUp = useAuthStore((state) => state.signUp);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccess(false);
 
     if (password !== confirmPassword) {
       setError('Hasła nie są identyczne.');
@@ -35,6 +37,14 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
     if (error) {
       setError(error.message || 'Błąd rejestracji. Spróbuj ponownie.');
       setLoading(false);
+    } else {
+      setSuccess(true);
+      setLoading(false);
+      // Reset form
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
     }
   };
 
@@ -114,6 +124,12 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
                 {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+                Rejestracja zakończona pomyślnie! Administrator potwierdzi Twój email. Możesz się teraz zalogować.
               </div>
             )}
 
