@@ -15,5 +15,6 @@ export interface UserProfile {
   full_name: string | null;
   avatar_url: string | null;
   role: 'user' | 'admin';
+  active: 0 | 1;
 }
 
