@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="px-6">
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600">
-            © {new Date().getFullYear()} IT Task Manager. Wszelkie prawa zastrzeżone.
+            © {new Date().getFullYear()} Menadżer Zadań. Wszelkie prawa zastrzeżone.
           </p>
           <div className="flex items-center space-x-4">
             <a
