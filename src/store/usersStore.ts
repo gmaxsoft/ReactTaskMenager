@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { supabase, supabaseAdmin } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import type { User } from '../types/user';
 
 interface UsersStore {
@@ -36,52 +36,9 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   },
 
   addUser: async (userData) => {
-    try {
-      if (!supabaseAdmin) {
-        return { error: new Error('Service role key not configured') };
-      }
-
-      // Utwórz użytkownika w auth używając admin client
-      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email: userData.email,
-        password: userData.password,
-        email_confirm: true,
-        user_metadata: {
-          full_name: userData.full_name,
-        },
-      });
-
-      if (authError) {
-        return { error: authError as Error };
-      }
-
-      // Profil użytkownika jest automatycznie tworzony przez trigger
-      // Zaktualizuj role i active
-      if (authData.user) {
-        const updateData: { role?: string; active?: number } = {};
-        if (userData.role) {
-          updateData.role = userData.role;
-        }
-        // Nowi użytkownicy dodani przez admina są od razu aktywni
-        updateData.active = 1;
-
-        const { error: updateError } = await supabase
-          .from('users')
-          .update(updateData)
-          .eq('id', authData.user.id);
-
-        if (updateError) {
-          return { error: updateError as Error };
-        }
-      }
-
-      // Odśwież listę użytkowników
-      await get().fetchUsers();
-
-      return { error: null };
-    } catch (error) {
-      return { error: error as Error };
-    }
+    // Uwaga: Tworzenie użytkowników wymaga Supabase Edge Function lub backend API
+    // Service role key nie może być używany w przeglądarce ze względów bezpieczeństwa
+    return { error: new Error('Dodawanie użytkowników wymaga backend API. Użyj Supabase Edge Function lub backend endpoint.') };
   },
 
   updateUser: async (id, userData) => {
@@ -95,17 +52,9 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
         return { error: error as Error };
       }
 
-      // Jeśli active jest ustawione na 1, potwierdź email w auth.users
-      if (userData.active === 1 && supabaseAdmin) {
-        try {
-          await supabaseAdmin.auth.admin.updateUserById(id, {
-            email_confirm: true,
-          });
-        } catch (authError) {
-          console.error('Error confirming email in auth.users:', authError);
-          // Nie zwracamy błędu, bo aktualizacja w public.users się udała
-        }
-      }
+      // Uwaga: Potwierdzanie email w auth.users wymaga backend API
+      // Aby potwierdzić email, musisz wyłączyć wymaganie potwierdzenia email w ustawieniach Supabase
+      // Settings -> Authentication -> Email Auth -> Disable "Confirm email"
 
       // Odśwież listę użytkowników
       await get().fetchUsers();
@@ -117,25 +66,9 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   },
 
   deleteUser: async (id) => {
-    try {
-      if (!supabaseAdmin) {
-        return { error: new Error('Service role key not configured') };
-      }
-
-      // Usuń użytkownika z auth (to automatycznie usunie profil przez CASCADE)
-      const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(id);
-
-      if (authError) {
-        return { error: authError as Error };
-      }
-
-      // Odśwież listę użytkowników
-      await get().fetchUsers();
-
-      return { error: null };
-    } catch (error) {
-      return { error: error as Error };
-    }
+    // Uwaga: Usuwanie użytkowników wymaga Supabase Edge Function lub backend API
+    // Service role key nie może być używany w przeglądarce ze względów bezpieczeństwa
+    return { error: new Error('Usuwanie użytkowników wymaga backend API. Użyj Supabase Edge Function lub backend endpoint.') };
   },
 
   confirmUserEmail: async (id) => {
