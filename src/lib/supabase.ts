@@ -8,7 +8,3 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Uwaga: Service role key NIE MOŻE być używany w przeglądarce ze względów bezpieczeństwa!
-// Użyj Supabase Edge Functions lub backend API do operacji wymagających admin uprawnień.
-

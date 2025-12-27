@@ -30,7 +30,7 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">IT Task Manager</h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Menadżer Zadań</h1>
             <p className="text-gray-600">Zaloguj się do swojego konta</p>
           </div>
 
