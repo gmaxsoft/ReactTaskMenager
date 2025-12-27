@@ -70,46 +70,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
       });
 
       if (error) {
-        // Jeśli błąd to "Email not confirmed", automatycznie potwierdź email przez admin client
-        if ((error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) && supabaseAdmin) {
-          try {
-            // Znajdź użytkownika po email
-            const { data: users, error: listError } = await supabaseAdmin.auth.admin.listUsers();
-            
-            if (!listError && users) {
-              const user = users.users.find(u => u.email === email);
-              
-              if (user && !user.email_confirmed_at) {
-                // Potwierdź email użytkownika
-                await supabaseAdmin.auth.admin.updateUserById(user.id, {
-                  email_confirm: true,
-                });
-
-                // Teraz spróbuj ponownie zalogować
-                const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
-                  email,
-                  password,
-                });
-
-                if (!retryError && retryData?.session && retryData?.user) {
-                  // Pobierz profil użytkownika
-                  const { data: profile, error: profileError } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('id', retryData.user.id)
-                    .single();
-
-                  if (!profileError && profile) {
-                    set({ session: retryData.session, user: profile as User, loading: false });
-                    return { error: null };
-                  }
-                }
-              }
-            }
-          } catch (adminError) {
-            console.error('Error confirming email:', adminError);
-          }
-        }
         return { error: error as Error };
       }
 
@@ -123,6 +83,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
         if (profileError) {
           return { error: profileError as Error };
+        }
+
+        // Sprawdź czy użytkownik jest aktywny (potwierdzony przez admina)
+        if (profile.active === 0) {
+          return { error: new Error('Konto nie zostało jeszcze potwierdzone przez administratora.') };
         }
 
         set({ session: data.session, user: profile as User, loading: false });

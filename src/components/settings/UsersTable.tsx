@@ -68,6 +68,24 @@ export default function UsersTable() {
         },
       },
       {
+        accessorKey: 'active',
+        header: 'Status',
+        cell: (info) => {
+          const active = info.getValue() as number;
+          return (
+            <span
+              className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                active === 1
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
+              }`}
+            >
+              {active === 1 ? 'Aktywny' : 'Nieaktywny'}
+            </span>
+          );
+        },
+      },
+      {
         accessorKey: 'created_at',
         header: 'Data utworzenia',
         cell: (info) => {

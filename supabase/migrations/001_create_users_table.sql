@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS public.users (
   full_name TEXT,
   avatar_url TEXT,
   role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin')),
+  active INTEGER DEFAULT 0 CHECK (active IN (0, 1)),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()) NOT NULL
 );
@@ -48,11 +49,12 @@ CREATE POLICY "Admins can view all profiles"
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.users (id, email, full_name)
+  INSERT INTO public.users (id, email, full_name, active)
   VALUES (
     NEW.id,
     NEW.email,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', '')
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    0
   );
   RETURN NEW;
 END;

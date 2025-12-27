@@ -56,11 +56,18 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
       }
 
       // Profil użytkownika jest automatycznie tworzony przez trigger
-      // Ale możemy zaktualizować role jeśli potrzeba
-      if (authData.user && userData.role) {
+      // Zaktualizuj role i active
+      if (authData.user) {
+        const updateData: { role?: string; active?: number } = {};
+        if (userData.role) {
+          updateData.role = userData.role;
+        }
+        // Nowi użytkownicy dodani przez admina są od razu aktywni
+        updateData.active = 1;
+
         const { error: updateError } = await supabase
           .from('users')
-          .update({ role: userData.role })
+          .update(updateData)
           .eq('id', authData.user.id);
 
         if (updateError) {
@@ -120,27 +127,8 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   },
 
   confirmUserEmail: async (id) => {
-    try {
-      if (!supabaseAdmin) {
-        return { error: new Error('Service role key not configured') };
-      }
-
-      // Potwierdź email użytkownika
-      const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(id, {
-        email_confirm: true,
-      });
-
-      if (authError) {
-        return { error: authError as Error };
-      }
-
-      // Odśwież listę użytkowników
-      await get().fetchUsers();
-
-      return { error: null };
-    } catch (error) {
-      return { error: error as Error };
-    }
+    // Ta funkcja jest przestarzała, użyj updateUser z active: 1
+    return { error: new Error('Use updateUser with active: 1 instead') };
   },
 }));
 
