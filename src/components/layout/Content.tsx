@@ -1,4 +1,17 @@
+import { useNavigation } from '../../context/NavigationContext';
+import Settings from '../settings/Settings';
+
 export default function Content() {
+  const { currentView } = useNavigation();
+
+  if (currentView === 'settings') {
+    return (
+      <main className="flex-1 overflow-y-auto bg-gray-50">
+        <Settings />
+      </main>
+    );
+  }
+
   return (
     <main className="flex-1 overflow-y-auto bg-gray-50">
       <div className="p-6">

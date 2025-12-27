@@ -1,12 +1,18 @@
+import { useNavigation } from '../../context/NavigationContext';
+
 export default function LeftSidebar() {
+  const { currentView, setCurrentView } = useNavigation();
+
   return (
     <aside className="w-64 bg-gray-50 border-r border-gray-200 h-full">
       <nav className="p-4">
         <ul className="space-y-2">
           <li>
-            <a
-              href="#"
-              className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className={`w-full flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors ${
+                currentView === 'dashboard' ? 'bg-gray-200' : ''
+              }`}
             >
               <svg
                 className="w-5 h-5 mr-3"
@@ -22,12 +28,12 @@ export default function LeftSidebar() {
                 />
               </svg>
               Dashboard
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className="w-full flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <svg
                 className="w-5 h-5 mr-3"
@@ -43,12 +49,12 @@ export default function LeftSidebar() {
                 />
               </svg>
               Zadania
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className="w-full flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <svg
                 className="w-5 h-5 mr-3"
@@ -64,12 +70,12 @@ export default function LeftSidebar() {
                 />
               </svg>
               Projekty
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className="w-full flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <svg
                 className="w-5 h-5 mr-3"
@@ -85,12 +91,14 @@ export default function LeftSidebar() {
                 />
               </svg>
               Zespół
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            <button
+              onClick={() => setCurrentView('settings')}
+              className={`w-full flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors ${
+                currentView === 'settings' ? 'bg-gray-200' : ''
+              }`}
             >
               <svg
                 className="w-5 h-5 mr-3"
@@ -112,7 +120,7 @@ export default function LeftSidebar() {
                 />
               </svg>
               Ustawienia
-            </a>
+            </button>
           </li>
         </ul>
       </nav>
