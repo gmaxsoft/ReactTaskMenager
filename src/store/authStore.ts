@@ -70,6 +70,47 @@ export const useAuthStore = create<AuthStore>((set) => ({
       });
 
       if (error) {
+        // Jeśli błąd to "Email not confirmed", sprawdź czy użytkownik jest aktywny
+        // Jeśli active = 1, potwierdź email automatycznie i spróbuj ponownie
+        if ((error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) && supabaseAdmin) {
+          try {
+            // Znajdź użytkownika po email
+            const { data: users, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+            
+            if (!listError && users) {
+              const authUser = users.users.find(u => u.email === email);
+              
+              if (authUser) {
+                // Sprawdź profil użytkownika
+                const { data: profile, error: profileError } = await supabase
+                  .from('users')
+                  .select('*')
+                  .eq('id', authUser.id)
+                  .single();
+
+                // Jeśli użytkownik jest aktywny (active = 1), potwierdź email i zaloguj
+                if (!profileError && profile && profile.active === 1) {
+                  await supabaseAdmin.auth.admin.updateUserById(authUser.id, {
+                    email_confirm: true,
+                  });
+
+                  // Spróbuj ponownie zalogować
+                  const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                  });
+
+                  if (!retryError && retryData?.session && retryData?.user) {
+                    set({ session: retryData.session, user: profile as User, loading: false });
+                    return { error: null };
+                  }
+                }
+              }
+            }
+          } catch (adminError) {
+            console.error('Error handling email confirmation:', adminError);
+          }
+        }
         return { error: error as Error };
       }
 

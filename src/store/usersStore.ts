@@ -95,6 +95,18 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
         return { error: error as Error };
       }
 
+      // Jeśli active jest ustawione na 1, potwierdź email w auth.users
+      if (userData.active === 1 && supabaseAdmin) {
+        try {
+          await supabaseAdmin.auth.admin.updateUserById(id, {
+            email_confirm: true,
+          });
+        } catch (authError) {
+          console.error('Error confirming email in auth.users:', authError);
+          // Nie zwracamy błędu, bo aktualizacja w public.users się udała
+        }
+      }
+
       // Odśwież listę użytkowników
       await get().fetchUsers();
 
