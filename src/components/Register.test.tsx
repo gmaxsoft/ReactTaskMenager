@@ -3,11 +3,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import Register from './Register'
 
 // Mock auth store
-const mockSignUp = vi.fn()
+const mockSignUp = vi.fn().mockResolvedValue({ error: null })
 vi.mock('../store/authStore', () => ({
-  useAuthStore: vi.fn(() => ({
-    signUp: mockSignUp,
-  })),
+  useAuthStore: vi.fn((selector) => selector({ signUp: mockSignUp })),
 }))
 
 describe('Register', () => {
