@@ -9,12 +9,13 @@ interface EditTaskProps {
 }
 
 export default function EditTask({ task, onClose, onSuccess }: EditTaskProps) {
-  const { updateTask } = useTaskStore();
+  const { updateTask, users, fetchUsers } = useTaskStore();
   const [formData, setFormData] = useState({
     title: task.title,
     description: task.description || '',
     priority: task.priority,
     status: task.status,
+    user_id: task.user_id,
     start_date: task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : '',
     end_date: task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : '',
   });
@@ -22,19 +23,26 @@ export default function EditTask({ task, onClose, onSuccess }: EditTaskProps) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    fetchUsers();
     setFormData({
       title: task.title,
       description: task.description || '',
       priority: task.priority,
       status: task.status,
+      user_id: task.user_id,
       start_date: task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : '',
       end_date: task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : '',
     });
-  }, [task]);
+  }, [task, fetchUsers]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!formData.user_id) {
+      setError('Użytkownik musi być wybrany.');
+      return;
+    }
 
     if (!formData.title.trim()) {
       setError('Tytuł zadania jest wymagany.');
@@ -48,6 +56,7 @@ export default function EditTask({ task, onClose, onSuccess }: EditTaskProps) {
       description: formData.description.trim() || null,
       priority: formData.priority,
       status: formData.status,
+      user_id: formData.user_id,
       start_date: formData.start_date || null,
       end_date: formData.end_date || null,
     };
@@ -97,6 +106,26 @@ export default function EditTask({ task, onClose, onSuccess }: EditTaskProps) {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
               placeholder="Wpisz opis zadania (opcjonalne)"
             />
+          </div>
+
+          <div>
+            <label htmlFor="user_id" className="block text-sm font-medium text-gray-700 mb-2">
+              Użytkownik *
+            </label>
+            <select
+              id="user_id"
+              value={formData.user_id}
+              onChange={(e) => setFormData({ ...formData, user_id: e.target.value })}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+            >
+              <option value="">Wybierz użytkownika</option>
+              {users.map((userOption) => (
+                <option key={userOption.id} value={userOption.id}>
+                  {userOption.full_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

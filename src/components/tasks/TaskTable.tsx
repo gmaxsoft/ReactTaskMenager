@@ -94,6 +94,11 @@ export default function TaskTable() {
         cell: (info) => info.getValue(),
       },
       {
+        accessorKey: 'user_name',
+        header: 'Użytkownik',
+        cell: (info) => info.getValue() || '-',
+      },
+      {
         accessorKey: 'description',
         header: 'Opis',
         cell: (info) => {

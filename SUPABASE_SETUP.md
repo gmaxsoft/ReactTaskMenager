@@ -27,11 +27,60 @@ Po wyłączeniu tej opcji:
 - Kontrola dostępu będzie odbywać się tylko przez kolumnę `active` w tabeli `users`
 - Admin będzie mógł aktywować/dezaktywować użytkowników przez ustawienie `active = 1` lub `active = 0`
 
+## Migracje bazy danych
+
+Uruchom następujące migracje w Supabase:
+
+1. **Tabela użytkowników:**
+   ```sql
+   -- Uruchom zawartość pliku supabase/migrations/001_create_users_table.sql
+   ```
+
+2. **Tabela zadań:**
+   ```sql
+   -- Uruchom zawartość pliku supabase/migrations/002_create_tasks_table.sql
+   ```
+
+## Edge Functions
+
+Aplikacja używa następujących Supabase Edge Functions:
+
+### Funkcje użytkowników:
+- `add-user` - Dodawanie nowych użytkowników (tylko administratorzy)
+- `delete-user` - Usuwanie użytkowników (tylko administratorzy)
+
+### Funkcje zadań:
+- `add-task` - Dodawanie nowych zadań
+- `delete-task` - Usuwanie zadań (użytkownicy mogą usuwać swoje zadania, administratorzy wszystkie)
+
+Aby zainstalować funkcje:
+```bash
+# Zainstaluj Supabase CLI jeśli nie masz
+npm install -g supabase
+
+# Zaloguj się do Supabase
+supabase login
+
+# Zainicjuj projekt (jeśli nie zrobione)
+supabase init
+
+# Połącz z istniejącym projektem
+supabase link --project-ref YOUR_PROJECT_REF
+
+# Wdróż funkcje
+supabase functions deploy add-user
+supabase functions deploy delete-user
+supabase functions deploy add-task
+supabase functions deploy delete-task
+```
+
 ## Operacje wymagające backend API
 
 Następujące operacje wymagają backend API (Edge Functions lub backend endpoint):
-- Dodawanie nowych użytkowników (`addUser`)
-- Usuwanie użytkowników (`deleteUser`)
+- Dodawanie nowych użytkowników (`addUser`) - tylko administratorzy
+- Usuwanie użytkowników (`deleteUser`) - tylko administratorzy
+- Dodawanie zadań (`addTask`) - wszyscy użytkownicy
+- Usuwanie zadań (`deleteTask`) - użytkownicy mogą usuwać swoje zadania, administratorzy wszystkie
 - Potwierdzanie email w `auth.users` (opcjonalne, jeśli nie wyłączysz wymagania)
 
 Możesz zaimplementować te funkcje używając:
@@ -41,11 +90,26 @@ Możesz zaimplementować te funkcje używając:
 
 ## Aktualne działanie aplikacji
 
-Po wyłączeniu wymagania potwierdzenia email:
+Po skonfigurowaniu Edge Functions i wyłączeniu wymagania potwierdzenia email:
+
+### Funkcjonalność użytkowników:
 - ✅ Rejestracja działa (tworzy użytkownika z `active = 0`)
 - ✅ Logowanie działa (sprawdza tylko `active`)
 - ✅ Edycja użytkownika działa (aktualizuje `active`, `role`, `full_name`)
-- ✅ Usuwanie i dodawanie użytkowników wymaga backend API
+- ✅ Dodawanie użytkowników wymaga Edge Function `add-user` (tylko administratorzy)
+- ✅ Usuwanie użytkowników wymaga Edge Function `delete-user` (tylko administratorzy)
+
+### Funkcjonalność zadań:
+- ✅ Wyświetlanie zadań działa (RLS kontroluje dostęp)
+- ✅ Dodawanie zadań wymaga Edge Function `add-task`
+- ✅ Edycja zadań działa bezpośrednio przez Supabase (RLS kontroluje dostęp)
+- ✅ Usuwanie zadań wymaga Edge Function `delete-task`
+- ✅ Użytkownicy widzą tylko swoje zadania, administratorzy wszystkie
+
+### Kontrola dostępu:
+- **Użytkownicy standardowi:** Mogą zarządzać swoimi zadaniami i profilem
+- **Administratorzy:** Mogą zarządzać wszystkimi użytkownikami i zadaniami
+- **RLS (Row Level Security):** Aktywne na wszystkich tabelach dla bezpieczeństwa
 
 
 

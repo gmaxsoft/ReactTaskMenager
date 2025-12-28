@@ -5,6 +5,7 @@ export interface Task {
   priority: 'low' | 'medium' | 'high' | 'urgent';
   status: 'Nie rozpoczęto' | 'W trakcie' | 'Testowanie' | 'Aktualizacja' | 'Zakończenie';
   user_id: string;
+  user_name?: string;
   start_date: string | null;
   end_date: string | null;
   created_at: string;
@@ -26,6 +27,7 @@ export interface TaskUpdate {
   description?: string | null;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   status?: 'Nie rozpoczęto' | 'W trakcie' | 'Testowanie' | 'Aktualizacja' | 'Zakończenie';
+  user_id?: string;
   start_date?: string | null;
   end_date?: string | null;
 }

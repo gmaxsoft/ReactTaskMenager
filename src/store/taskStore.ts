@@ -4,9 +4,11 @@ import type { Task, TaskCreate, TaskUpdate } from '../types/task';
 
 interface TaskStore {
   tasks: Task[];
+  users: { id: string; full_name: string }[];
   loading: boolean;
   error: string | null;
   fetchTasks: () => Promise<void>;
+  fetchUsers: () => Promise<void>;
   addTask: (taskData: TaskCreate) => Promise<{ error: Error | null }>;
   updateTask: (id: string, taskData: TaskUpdate) => Promise<{ error: Error | null }>;
   deleteTask: (id: string) => Promise<{ error: Error | null }>;
@@ -14,23 +16,67 @@ interface TaskStore {
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
+  users: [],
   loading: false,
   error: null,
 
   fetchTasks: async () => {
     set({ loading: true, error: null });
     try {
-      const { data, error } = await supabase
+      // Pobierz zadania
+      const { data: tasksData, error: tasksError } = await supabase
         .from('tasks')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (tasksError) throw tasksError;
 
-      set({ tasks: data as Task[], loading: false });
+      // Pobierz unikalne user_ids
+      const userIds = [...new Set(tasksData?.map(task => task.user_id) || [])];
+
+      // Pobierz dane użytkowników
+      const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select('id, full_name')
+        .in('id', userIds);
+
+      if (usersError) {
+        console.warn('Error fetching users:', usersError);
+        // Kontynuuj bez danych użytkowników
+      }
+
+      // Utwórz mapę użytkowników
+      const usersMap = new Map();
+      usersData?.forEach(user => {
+        usersMap.set(user.id, user.full_name);
+      });
+
+      // Połącz dane
+      const tasksWithUser = tasksData?.map(task => ({
+        ...task,
+        user_name: usersMap.get(task.user_id) || 'Nieznany użytkownik'
+      })) || [];
+
+      set({ tasks: tasksWithUser as Task[], loading: false });
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
       console.error('Error fetching tasks:', error);
+    }
+  },
+
+  fetchUsers: async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, full_name')
+        .eq('active', 1)
+        .order('full_name');
+
+      if (error) throw error;
+
+      set({ users: data || [] });
+    } catch (error) {
+      console.error('Error fetching users:', error);
     }
   },
 
