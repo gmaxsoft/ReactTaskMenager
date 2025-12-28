@@ -145,13 +145,6 @@ npm run build
 npm run preview
 ```
 
-## 🤝 Przyczynianie się
-
-1. Forkuj projekt
-2. Utwórz branch dla swojej funkcji (`git checkout -b feature/AmazingFeature`)
-3. Commituj zmiany (`git commit -m 'Add some AmazingFeature'`)
-4. Push do brancha (`git push origin feature/AmazingFeature`)
-5. Otwórz Pull Request
 
 ## 📄 Licencja
 
@@ -159,7 +152,7 @@ Ten projekt jest licencjonowany na podstawie licencji MIT - zobacz plik [LICENSE
 
 ## 👥 Autor
 
-**Maxsoft** - [maxsoft@example.com](mailto:maxsoft@example.com)
+**Maxsoft** - [biuro@maxsoft.pl](mailto:biuro@maxsoft.pl)
 
 ## 🙏 Podziękowania
 
