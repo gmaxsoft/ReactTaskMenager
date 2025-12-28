@@ -39,6 +39,7 @@ Tabela `public.users` zawiera:
 - **full_name** (TEXT) - Pełne imię i nazwisko
 - **avatar_url** (TEXT) - URL do awatara użytkownika
 - **role** (TEXT) - Rola użytkownika: 'user' lub 'admin' (domyślnie 'user')
+- **active** (INTEGER) - Status aktywności: 0 (nieaktywny) lub 1 (aktywny) (domyślnie 0)
 - **created_at** (TIMESTAMP) - Data utworzenia
 - **updated_at** (TIMESTAMP) - Data ostatniej aktualizacji
 
@@ -64,7 +65,7 @@ Tabela `public.tasks` zawiera:
 - **title** (TEXT) - Nazwa/tytuł zadania (wymagane)
 - **description** (TEXT) - Opis zadania (długi tekst, opcjonalne)
 - **priority** (TEXT) - Priorytet zadania: 'low', 'medium', 'high', 'urgent' (domyślnie 'medium')
-- **status** (TEXT) - Status zadania: 'W trakcie', 'Testowanie', 'Aktualizacja', 'Zakończenie' (domyślnie 'W trakcie')
+- **status** (TEXT) - Status zadania: 'Nie rozpoczęto', 'W trakcie', 'Testowanie', 'Aktualizacja', 'Zakończenie' (domyślnie 'Nie rozpoczęto')
 - **user_id** (UUID) - Referencja do `auth.users.id`, użytkownik przypisany do zadania (wymagane)
 - **start_date** (TIMESTAMP) - Data rozpoczęcia prac (opcjonalne)
 - **end_date** (TIMESTAMP) - Data zakończenia prac (opcjonalne)

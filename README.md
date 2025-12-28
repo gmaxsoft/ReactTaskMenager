@@ -1,5 +1,7 @@
 # Task Manager
 
+![Task Manager Preview](taskMenager.webp)
+
 Nowoczesna aplikacja do zarządzania zadaniami zbudowana w React z TypeScript, wykorzystująca Supabase jako backend.
 
 ## 🚀 Funkcje
@@ -120,7 +122,6 @@ taskmanager/
 ├── supabase/
 │   ├── functions/           # Edge Functions
 │   └── migrations/          # Migracje bazy danych
-├── public/                  # Statyczne pliki
 └── ...
 ```
 
