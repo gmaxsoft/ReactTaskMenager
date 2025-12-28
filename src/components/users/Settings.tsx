@@ -7,7 +7,7 @@ export default function Settings() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Ustawienia</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Użytkownicy</h1>
 
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">

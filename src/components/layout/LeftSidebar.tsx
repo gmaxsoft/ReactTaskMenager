@@ -32,7 +32,7 @@ export default function LeftSidebar() {
           </li>
           <li>
             <button
-              onClick={() => setCurrentView('dashboard')}
+              onClick={() => setCurrentView('tasks')}
               className="w-full flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <svg
@@ -53,9 +53,9 @@ export default function LeftSidebar() {
           </li>
           <li>
             <button
-              onClick={() => setCurrentView('settings')}
+              onClick={() => setCurrentView('users')}
               className={`w-full flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors ${
-                currentView === 'settings' ? 'bg-gray-200' : ''
+                currentView === 'users' ? 'bg-gray-200' : ''
               }`}
             >
               <svg

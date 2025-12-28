@@ -1,13 +1,22 @@
 import { useNavigation } from '../../context/NavigationContext';
-import Settings from '../settings/Settings';
+import UsersSettings from '../users/Settings';
+import TasksSettings from '../tasks/Settings';
 
 export default function Content() {
   const { currentView } = useNavigation();
 
-  if (currentView === 'settings') {
+  if (currentView === 'users') {
     return (
       <main className="flex-1 overflow-y-auto bg-gray-50">
-        <Settings />
+        <UsersSettings />
+      </main>
+    );
+  }
+
+  if (currentView === 'tasks') {
+    return (
+      <main className="flex-1 overflow-y-auto bg-gray-50">
+        <TasksSettings />
       </main>
     );
   }
