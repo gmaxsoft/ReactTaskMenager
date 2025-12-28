@@ -34,6 +34,7 @@ Nowoczesna aplikacja do zarządzania zadaniami zbudowana w React z TypeScript, w
 - **Backend:** Supabase (PostgreSQL + Auth + Edge Functions)
 - **Tabele:** TanStack Table v8
 - **Narzędzia:** ESLint, PostCSS, Autoprefixer
+- **Testowanie:** Vitest, @testing-library/react, jsdom
 
 ## 📦 Instalacja
 
@@ -117,6 +118,7 @@ taskmanager/
 │   ├── context/             # React Context
 │   ├── lib/                 # Biblioteki pomocnicze
 │   ├── store/               # Zustand stores
+│   ├── test/                # Konfiguracja testów
 │   ├── types/               # TypeScript typy
 │   └── ...
 ├── supabase/
@@ -134,6 +136,21 @@ taskmanager/
 
 ## 🧪 Uruchamianie testów
 
+### Testy jednostkowe (Vitest)
+```bash
+npm run test          # Uruchom testy w trybie watch
+npm run test:run      # Uruchom testy jednorazowo
+npm run test:ui       # Uruchom testy z interfejsem graficznym
+```
+
+### Testy obejmują:
+- **Komponenty layoutu:** Footer, Content
+- **Komponenty logowania i rejestracji:** Login, Register
+- **Komponenty zadań:** Settings (zakładki, przełączanie)
+- **Komponenty użytkowników:** Settings (zakładki, przełączanie)
+- **Komponenty pomocy i kontaktu:** Help, Contact
+
+### Linting
 ```bash
 npm run lint
 ```
