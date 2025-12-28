@@ -36,9 +36,40 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   },
 
   addUser: async (userData) => {
-    // Uwaga: Tworzenie użytkowników wymaga Supabase Edge Function lub backend API
-    // Service role key nie może być używany w przeglądarce ze względów bezpieczeństwa
-    return { error: new Error('Dodawanie użytkowników wymaga backend API. Użyj Supabase Edge Function lub backend endpoint.') };
+    try {
+      // Get current session to ensure token is passed
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        return { error: new Error('User not authenticated') };
+      }
+
+      const { data, error } = await supabase.functions.invoke('add-user', {
+        body: userData,
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        }
+      });
+
+      if (error) {
+        console.error('Error invoking add-user function:', error);
+        return { error: new Error(error.message || 'Failed to add user') };
+      }
+
+      // Check if response contains an error
+      if (data && typeof data === 'object' && 'error' in data) {
+        console.error('Error from add-user function:', data.error);
+        return { error: new Error(data.error || 'Failed to add user') };
+      }
+
+      // Odśwież listę użytkowników
+      await get().fetchUsers();
+
+      return { error: null };
+    } catch (error) {
+      console.error('Exception in addUser:', error);
+      return { error: error instanceof Error ? error : new Error('Unknown error occurred') };
+    }
   },
 
   updateUser: async (id, userData) => {
@@ -66,12 +97,43 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   },
 
   deleteUser: async (id) => {
-    // Uwaga: Usuwanie użytkowników wymaga Supabase Edge Function lub backend API
-    // Service role key nie może być używany w przeglądarce ze względów bezpieczeństwa
-    return { error: new Error('Usuwanie użytkowników wymaga backend API. Użyj Supabase Edge Function lub backend endpoint.') };
+    try {
+      // Get current session to ensure token is passed
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        return { error: new Error('User not authenticated') };
+      }
+
+      const { data, error } = await supabase.functions.invoke('delete-user', {
+        body: { id },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        }
+      });
+
+      if (error) {
+        console.error('Error invoking delete-user function:', error);
+        return { error: new Error(error.message || 'Failed to delete user') };
+      }
+
+      // Check if response contains an error
+      if (data && typeof data === 'object' && 'error' in data) {
+        console.error('Error from delete-user function:', data.error);
+        return { error: new Error(data.error || 'Failed to delete user') };
+      }
+
+      // Odśwież listę użytkowników
+      await get().fetchUsers();
+
+      return { error: null };
+    } catch (error) {
+      console.error('Exception in deleteUser:', error);
+      return { error: error instanceof Error ? error : new Error('Unknown error occurred') };
+    }
   },
 
-  confirmUserEmail: async (id) => {
+  confirmUserEmail: async (_id) => {
     // Ta funkcja jest przestarzała, użyj updateUser z active: 1
     return { error: new Error('Use updateUser with active: 1 instead') };
   },

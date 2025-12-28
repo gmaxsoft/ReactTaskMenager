@@ -60,3 +60,8 @@ Tabela ma włączone RLS z następującymi politykami:
 - Email jest synchronizowany z `auth.users`
 - RLS zapewnia, że użytkownicy widzą tylko swoje dane (chyba że są adminami)
 
+
+
+
+
+

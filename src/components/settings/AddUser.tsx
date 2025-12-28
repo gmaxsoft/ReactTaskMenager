@@ -61,7 +61,7 @@ export default function AddUser({ onSuccess }: AddUserProps) {
     <div className="bg-white rounded-lg shadow p-6 max-w-2xl">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Dodaj nowego użytkownika</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             Email *
@@ -74,6 +74,7 @@ export default function AddUser({ onSuccess }: AddUserProps) {
             required
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
             placeholder="uzytkownik@example.com"
+            autoComplete="off"
           />
         </div>
 
@@ -89,6 +90,7 @@ export default function AddUser({ onSuccess }: AddUserProps) {
             required
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
             placeholder="Jan Kowalski"
+            autoComplete="off"
           />
         </div>
 
@@ -119,7 +121,8 @@ export default function AddUser({ onSuccess }: AddUserProps) {
             required
             minLength={6}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
-            placeholder="••••••••"
+            placeholder="Wpisz hasło"
+            autoComplete="off"
           />
           <p className="mt-1 text-xs text-gray-500">Minimum 6 znaków</p>
         </div>
@@ -136,7 +139,8 @@ export default function AddUser({ onSuccess }: AddUserProps) {
             required
             minLength={6}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
-            placeholder="••••••••"
+            placeholder="Wpisz hasło"
+            autoComplete="off"
           />
         </div>
 
@@ -166,4 +170,9 @@ export default function AddUser({ onSuccess }: AddUserProps) {
     </div>
   );
 }
+
+
+
+
+
 

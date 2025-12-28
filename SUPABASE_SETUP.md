@@ -47,3 +47,8 @@ Po wyłączeniu wymagania potwierdzenia email:
 - ✅ Edycja użytkownika działa (aktualizuje `active`, `role`, `full_name`)
 - ✅ Usuwanie i dodawanie użytkowników wymaga backend API
 
+
+
+
+
+
