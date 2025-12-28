@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 
-type View = 'dashboard' | 'users' | 'tasks';
+type View = 'dashboard' | 'users' | 'tasks' | 'help' | 'contact';
 
 interface NavigationContextType {
   currentView: View;

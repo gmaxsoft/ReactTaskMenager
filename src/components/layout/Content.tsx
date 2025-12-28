@@ -3,6 +3,8 @@ import { useNavigation } from '../../context/NavigationContext';
 import { useTaskStore } from '../../store/taskStore';
 import UsersSettings from '../users/Settings';
 import TasksSettings from '../tasks/Settings';
+import HelpSettings from '../help/Help';
+import ContactSettings from '../contact/Contact';
 
 export default function Content() {
   const { currentView } = useNavigation();
@@ -42,6 +44,22 @@ export default function Content() {
     return (
       <main className="flex-1 overflow-y-auto bg-gray-50">
         <TasksSettings />
+      </main>
+    );
+  }
+
+  if (currentView === 'help') {
+    return (
+      <main className="flex-1 overflow-y-auto bg-gray-50">
+        <HelpSettings />
+      </main>
+    );
+  }
+
+  if (currentView === 'contact') {
+    return (
+      <main className="flex-1 overflow-y-auto bg-gray-50">
+        <ContactSettings />
       </main>
     );
   }

@@ -1,4 +1,7 @@
+import { useNavigation } from '../../context/NavigationContext';
+
 export default function Footer() {
+  const { setCurrentView } = useNavigation();
   return (
     <footer className="bg-white border-t border-gray-200 py-4">
       <div className="px-6">
@@ -7,24 +10,18 @@ export default function Footer() {
             © {new Date().getFullYear()} Menadżer Zadań. Wszelkie prawa zastrzeżone.
           </p>
           <div className="flex items-center space-x-4">
-            <a
-              href="#"
+            <button
+              onClick={() => setCurrentView('help')}
               className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
             >
               Pomoc
-            </a>
-            <a
-              href="#"
+            </button>
+            <button
+              onClick={() => setCurrentView('contact')}
               className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
             >
               Kontakt
-            </a>
-            <a
-              href="#"
-              className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              Dokumentacja
-            </a>
+            </button>
           </div>
         </div>
       </div>
