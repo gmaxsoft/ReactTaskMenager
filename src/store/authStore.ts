@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       }
 
       // Nasłuchuj zmian w autentykacji
-      supabase.auth.onAuthStateChange(async (event, session) => {
+      supabase.auth.onAuthStateChange(async (_event, session) => {
         if (session) {
           const { data: profile, error } = await supabase
             .from('users')

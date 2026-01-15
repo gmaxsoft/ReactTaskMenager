@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useUsersStore } from '../../store/usersStore';
 import type { User } from '../../types/user';
 
