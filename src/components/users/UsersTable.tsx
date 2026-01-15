@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -23,7 +23,7 @@ export default function UsersTable() {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (!confirm('Czy na pewno chcesz usunąć tego użytkownika?')) {
       return;
     }
@@ -35,7 +35,7 @@ export default function UsersTable() {
     if (error) {
       alert(`Błąd usuwania: ${error.message}`);
     }
-  };
+  }, [deleteUser]);
 
   const columns = useMemo<ColumnDef<User>[]>(
     () => [

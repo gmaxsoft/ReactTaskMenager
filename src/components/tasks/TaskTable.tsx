@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -25,7 +25,7 @@ export default function TaskTable() {
     fetchTasks();
   }, [fetchTasks]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (!confirm('Czy na pewno chcesz usunąć to zadanie?')) {
       return;
     }
@@ -37,7 +37,7 @@ export default function TaskTable() {
     if (error) {
       alert(`Błąd usuwania: ${error.message}`);
     }
-  };
+  }, [deleteTask]);
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
