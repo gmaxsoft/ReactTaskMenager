@@ -10,21 +10,21 @@ interface EditUserProps {
 
 export default function EditUser({ user, onClose, onSuccess }: EditUserProps) {
   const { updateUser } = useUsersStore();
-  const [formData, setFormData] = useState({
+  
+  const initialFormData = useMemo(() => ({
     full_name: user.full_name || '',
     role: user.role,
     active: user.active,
-  });
+  }), [user]);
+
+  const [formData, setFormData] = useState(initialFormData);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Update form data when user prop changes
   useEffect(() => {
-    setFormData({
-      full_name: user.full_name || '',
-      role: user.role,
-      active: user.active,
-    });
-  }, [user]);
+    setFormData(initialFormData);
+  }, [initialFormData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTaskStore } from '../../store/taskStore';
 import type { Task } from '../../types/task';
 
@@ -10,7 +10,8 @@ interface EditTaskProps {
 
 export default function EditTask({ task, onClose, onSuccess }: EditTaskProps) {
   const { updateTask, users, fetchUsers } = useTaskStore();
-  const [formData, setFormData] = useState({
+  
+  const initialFormData = useMemo(() => ({
     title: task.title,
     description: task.description || '',
     priority: task.priority,
@@ -18,22 +19,19 @@ export default function EditTask({ task, onClose, onSuccess }: EditTaskProps) {
     user_id: task.user_id,
     start_date: task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : '',
     end_date: task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : '',
-  });
+  }), [task]);
+
+  const [formData, setFormData] = useState(initialFormData);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchUsers();
-    setFormData({
-      title: task.title,
-      description: task.description || '',
-      priority: task.priority,
-      status: task.status,
-      user_id: task.user_id,
-      start_date: task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : '',
-      end_date: task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : '',
-    });
-  }, [task, fetchUsers]);
+  }, [fetchUsers]);
+
+  useEffect(() => {
+    setFormData(initialFormData);
+  }, [initialFormData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

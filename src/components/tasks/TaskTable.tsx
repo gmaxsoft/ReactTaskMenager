@@ -201,6 +201,7 @@ export default function TaskTable() {
     [deletingTaskId, user, handleDelete]
   );
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: tasks,
     columns,
