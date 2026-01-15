@@ -22,13 +22,11 @@ Deno.serve(async (req: Request) => {
       return new Response(JSON.stringify({ error: 'Missing auth header' }), { status: 401, headers: corsHeaders });
     }
 
-    const token = authHeader.replace('Bearer ', '');
-
     // Get request body first
     let body;
     try {
       body = await req.json();
-    } catch (parseError) {
+    } catch {
       return new Response(
         JSON.stringify({ error: 'Invalid request body' }),
         {

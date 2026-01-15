@@ -198,7 +198,7 @@ export default function TaskTable() {
         },
       },
     ],
-    [deletingTaskId, user]
+    [deletingTaskId, user, handleDelete]
   );
 
   const table = useReactTable({

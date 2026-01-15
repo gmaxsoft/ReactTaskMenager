@@ -86,7 +86,17 @@ Deno.serve(async (req: Request) => {
       .eq('id', user.id)
       .single();
 
-    const isAdmin = userProfile?.role === 'admin';
+    if (profileError || !userProfile) {
+      return new Response(
+        JSON.stringify({ error: 'Error checking user permissions', details: profileError?.message }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    const isAdmin = userProfile.role === 'admin';
     const isOwner = task.user_id === user.id;
 
     if (!isAdmin && !isOwner) {

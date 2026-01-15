@@ -133,7 +133,7 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
     }
   },
 
-  confirmUserEmail: async (_id) => {
+  confirmUserEmail: async () => {
     // Ta funkcja jest przestarzała, użyj updateUser z active: 1
     return { error: new Error('Use updateUser with active: 1 instead') };
   },

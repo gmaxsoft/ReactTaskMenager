@@ -102,7 +102,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   signUp: async (email: string, password: string, fullName: string) => {
     try {
       // Używamy zwykłego signUp, ale email będzie wymagał potwierdzenia przez admina
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {

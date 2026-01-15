@@ -19,6 +19,7 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useNavigation() {
   const context = useContext(NavigationContext);
   if (context === undefined) {

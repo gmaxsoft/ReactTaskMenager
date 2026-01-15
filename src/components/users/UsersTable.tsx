@@ -119,7 +119,7 @@ export default function UsersTable() {
         },
       },
     ],
-    [deletingUserId]
+    [deletingUserId, handleDelete]
   );
 
   const table = useReactTable({
